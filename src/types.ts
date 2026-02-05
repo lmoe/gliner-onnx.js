@@ -20,4 +20,6 @@ export interface RuntimeOptions {
   executionProviders?: InferenceSession.ExecutionProviderConfig[];
   /** Model precision. @default 'fp32' */
   precision?: Precision;
+  /** Maximum span width (overrides model config). */
+  maxWidth?: number;
 }

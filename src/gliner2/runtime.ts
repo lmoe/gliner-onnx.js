@@ -69,7 +69,7 @@ export class GLiNER2ONNXRuntime {
       throw new ModelNotFoundError(`Model directory not found: ${modelPath}`);
     }
 
-    const config = GLiNER2Config.load(modelPath);
+    const config = GLiNER2Config.load(modelPath, options);
 
     const [encoder, classifier, spanRep, countEmbed] = await Promise.all([
       GLiNER2ONNXRuntime.loadModel(config.getOnnxPath(precision, 'encoder'), providers),

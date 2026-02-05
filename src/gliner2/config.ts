@@ -2,14 +2,10 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 
 import { ConfigurationError } from '../errors.js';
+import type { RuntimeOptions } from '../types.js';
 import { CONFIG_FILE, GLINER2_CONFIG_FILE, REQUIRED_SPECIAL_TOKENS } from './constants.js';
 import type { Precision } from './constants.js';
 
-// -------------------------------------------------------------------------
-// gliner2_config.json schema
-// -------------------------------------------------------------------------
-
-/** ONNX model file paths for a single precision level. */
 export interface OnnxModelFiles {
   encoder: string;
   classifier: string;
@@ -17,7 +13,6 @@ export interface OnnxModelFiles {
   count_embed: string;
 }
 
-/** Special tokens required by GLiNER2. */
 export interface SpecialTokens {
   '[P]': number;
   '[L]': number;
@@ -25,25 +20,16 @@ export interface SpecialTokens {
   '[SEP_TEXT]': number;
 }
 
-/** Raw gliner2_config.json file schema. */
 export interface GLiNER2ConfigFile {
   max_width: number;
   special_tokens: SpecialTokens & Record<string, number>;
   onnx_files: Partial<Record<Precision, OnnxModelFiles>>;
 }
 
-// -------------------------------------------------------------------------
-// config.json schema (transformer config)
-// -------------------------------------------------------------------------
-
 /** Transformer model config (config.json). Only fields we need. */
 export interface TransformerConfig {
   hidden_size: number;
 }
-
-// -------------------------------------------------------------------------
-// Config loader class
-// -------------------------------------------------------------------------
 
 /** Loads and validates GLiNER2 configuration files. */
 export class GLiNER2Config {
@@ -53,19 +39,19 @@ export class GLiNER2Config {
   public readonly specialTokens: SpecialTokens;
   public readonly onnxFiles: Partial<Record<Precision, OnnxModelFiles>>;
 
-  private constructor(modelPath: string, transformerConfig: TransformerConfig, gliner2Config: GLiNER2ConfigFile) {
+  private constructor(modelPath: string, transformerConfig: TransformerConfig, gliner2Config: GLiNER2ConfigFile, options: RuntimeOptions = {}) {
     this.modelPath = modelPath;
     this.hiddenSize = transformerConfig.hidden_size;
-    this.maxWidth = gliner2Config.max_width;
+    this.maxWidth = options.maxWidth ?? gliner2Config.max_width;
     this.specialTokens = gliner2Config.special_tokens as SpecialTokens;
     this.onnxFiles = gliner2Config.onnx_files;
   }
 
   /** Load configuration from a model directory. */
-  public static load(modelPath: string): GLiNER2Config {
+  public static load(modelPath: string, options: RuntimeOptions = {}): GLiNER2Config {
     const transformerConfig = GLiNER2Config.loadTransformerConfig(modelPath);
     const gliner2Config = GLiNER2Config.loadGliner2Config(modelPath);
-    return new GLiNER2Config(modelPath, transformerConfig, gliner2Config);
+    return new GLiNER2Config(modelPath, transformerConfig, gliner2Config, options);
   }
 
   private static loadTransformerConfig(modelPath: string): TransformerConfig {
