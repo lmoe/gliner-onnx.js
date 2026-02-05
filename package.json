@@ -1,0 +1,59 @@
+{
+  "name": "@lmoe/gliner-onnx",
+  "version": "0.1.0",
+  "description": "GLiNER 1+2 ONNX runtime for NER and text classification without PyTorch",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write src/",
+    "format:check": "prettier --check src/",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "gliner",
+    "gliner2",
+    "ner",
+    "named-entity-recognition",
+    "text-classification",
+    "onnx",
+    "ml",
+    "nlp"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@huggingface/hub": "^2.8.0",
+    "@huggingface/transformers": "^3.8.1",
+    "onnxruntime-node": "^1.23.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/node": "^22.10.2",
+    "eslint": "^9.39.2",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.18.2",
+    "vitest": "^2.1.8"
+  }
+}
