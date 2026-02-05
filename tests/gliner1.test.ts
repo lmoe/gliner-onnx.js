@@ -11,8 +11,12 @@ import { fileURLToPath } from 'node:url';
 import { describe, it, expect, beforeAll } from 'vitest';
 import { GLiNER1ONNXRuntime } from '../src/gliner1/runtime.js';
 import type { GLiNER1AllFixtures } from './fixtures.types.js';
+import * as ort from 'onnxruntime-node';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const USE_GPU = process.env['USE_GPU'] === '1';
+const EXECUTION_PROVIDERS: ort.InferenceSession.ExecutionProviderConfig[] = USE_GPU ? ['cuda', 'cpu'] : ['cpu'];
 
 const MODEL_IDS: Record<string, string> = {
   'gliner_small-v2.1': 'onnx-community/gliner_small-v2.1',
@@ -38,7 +42,7 @@ for (const [modelKey, fixtures] of Object.entries(allFixtures)) {
 
     beforeAll(async () => {
       runtime = await GLiNER1ONNXRuntime.fromPretrained(modelId, undefined, {
-        executionProviders: ['cpu'],
+        executionProviders: EXECUTION_PROVIDERS,
       });
     }, 120000);
 

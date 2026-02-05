@@ -12,9 +12,12 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import { GLiNER2ONNXRuntime } from '../src/gliner2/runtime.js';
 import type { Precision } from '../src/gliner2/constants.js';
 import type { GLiNER2AllFixtures } from './fixtures.types.js';
+import * as ort from 'onnxruntime-node';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const USE_GPU = process.env['USE_GPU'] === '1';
+const EXECUTION_PROVIDERS: ort.InferenceSession.ExecutionProviderConfig[] = USE_GPU ? ['cuda', 'cpu'] : ['cpu'];
 const SCORE_TOLERANCE = 0.05;
 
 const MODEL_IDS: Record<string, string> = {
@@ -42,7 +45,7 @@ for (const [modelKey, fixtures] of Object.entries(allFixtures)) {
       let runtime: GLiNER2ONNXRuntime;
 
       beforeAll(async () => {
-        runtime = await GLiNER2ONNXRuntime.fromPretrained(modelId, { precision, executionProviders: ['cpu'] });
+        runtime = await GLiNER2ONNXRuntime.fromPretrained(modelId, { precision, executionProviders: EXECUTION_PROVIDERS });
       }, 120000);
 
       describe('Classification', () => {

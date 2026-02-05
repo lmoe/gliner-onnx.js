@@ -23,6 +23,7 @@
     "format": "prettier --write src/",
     "format:check": "prettier --check src/",
     "test": "vitest run",
+    "test:gpu": "USE_GPU=1 vitest run",
     "test:watch": "vitest",
     "prepublishOnly": "npm run build"
   },
@@ -42,9 +43,8 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
-    "@huggingface/hub": "^2.8.0",
-    "@huggingface/transformers": "^3.8.1",
-    "onnxruntime-node": "^1.23.2"
+    "@huggingface/hub": "^1.0.0",
+    "@huggingface/transformers": "^3.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
